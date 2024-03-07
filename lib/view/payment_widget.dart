@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterwave_standard/core/TransactionCallBack.dart';
+import 'package:flutterwave_standard/core/navigation_controller.dart';
 import 'package:flutterwave_standard/models/requests/standard_request.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
-import 'package:flutterwave_standard/core/navigation_controller.dart';
 import 'package:flutterwave_standard/view/view_utils.dart';
 import 'package:http/http.dart';
 
@@ -13,10 +13,11 @@ class PaymentWidget extends StatefulWidget {
   final StandardRequest request;
   final BuildContext mainContext;
 
-  BuildContext? loadingDialogContext;
-  SnackBar? snackBar;
+  // BuildContext? loadingDialogContext;
+  // SnackBar? snackBar;
 
-  PaymentWidget({required this.request, required this.style, required this.mainContext});
+  PaymentWidget(
+      {required this.request, required this.style, required this.mainContext});
 
   @override
   State<StatefulWidget> createState() => _PaymentState();
@@ -58,7 +59,7 @@ class _PaymentState extends State<PaymentWidget>
               autofocus: true,
               onPressed: _handleButtonClicked,
               style: ElevatedButton.styleFrom(
-                  primary: widget.style.getButtonColor(),
+                  backgroundColor: widget.style.getButtonColor(),
                   textStyle: widget.style.getButtonTextStyle()),
               child: Text(
                 widget.style.getButtonText(),

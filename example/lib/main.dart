@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterwave_standard/flutterwave.dart';
-import 'package:flutterwave_standard/models/subaccount.dart';
+// import 'package:flutterwave_standard/models/subaccount.dart';
 import 'package:uuid/uuid.dart';
 
 void main() {
@@ -64,8 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   keyboardType: TextInputType.number,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(hintText: "Amount"),
-                  validator: (value) =>
-                      value.isNotEmpty ? null : "Amount is required",
+                  validator: (value) => (value?.isNotEmpty ?? false)
+                      ? null
+                      : "Amount is required",
                 ),
               ),
               Container(
@@ -79,8 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   decoration: InputDecoration(
                     hintText: "Currency",
                   ),
-                  validator: (value) =>
-                      value.isNotEmpty ? null : "Currency is required",
+                  validator: (value) => (value?.isNotEmpty ?? false)
+                      ? null
+                      : "Currency is required",
                 ),
               ),
               Container(
@@ -151,9 +153,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: double.infinity,
                 height: 50,
                 margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: this._onPressed,
-                  color: Colors.blue,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
                   child: Text(
                     "Make Payment",
                     style: TextStyle(color: Colors.white),
@@ -168,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _onPressed() {
-    if (this.formKey.currentState.validate()) {
+    if (this.formKey.currentState?.validate() ?? false) {
       this._handlePaymentInitialization();
     }
   }
@@ -194,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
       mainTextStyle: TextStyle(
         color: Colors.indigo,
         fontSize: 19,
-        letterSpacing: 2
+        letterSpacing: 2,
       ),
       dialogBackgroundColor: Colors.greenAccent,
       appBarIcon: Icon(Icons.message, color: Colors.purple),
@@ -207,13 +211,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final Customer customer = Customer(
         name: "FLW Developer",
-        phoneNumber: this.phoneNumberController.text ?? "12345678",
+        phoneNumber: this.phoneNumberController.text,
         email: "customer@customer.com");
-    
-    final subAccounts = [
-      SubAccount(id: "RS_1A3278129B808CB588B53A14608169AD", transactionChargeType: "flat", transactionPercentage: 25),
-      SubAccount(id: "RS_C7C265B8E4B16C2D472475D7F9F4426A", transactionChargeType: "flat", transactionPercentage: 50)
-    ];
+
+    // final subAccounts = [
+    //   SubAccount(
+    //       id: "RS_1A3278129B808CB588B53A14608169AD",
+    //       transactionChargeType: "flat",
+    //       transactionPercentage: 25),
+    //   SubAccount(
+    //       id: "RS_C7C265B8E4B16C2D472475D7F9F4426A",
+    //       transactionChargeType: "flat",
+    //       transactionPercentage: 50)
+    // ];
 
     final Flutterwave flutterwave = Flutterwave(
         context: context,
@@ -231,17 +241,13 @@ class _MyHomePageState extends State<MyHomePage> {
         customization: Customization(title: "Test Payment"),
         isTestMode: false);
     final ChargeResponse response = await flutterwave.charge();
-    if (response != null) {
-      this.showLoading(response.status);
-      print("${response.toJson()}");
-    } else {
-      this.showLoading("No Response!");
-    }
+    this.showLoading(response.status!);
+    print("${response.toJson()}");
   }
 
   String getPublicKey() {
     if (isTestMode) return "FLWPUBK_TEST-895362a74986153380262d89bfdc9b8a-X";
-      // "FLWPUBK_TEST-02b9b5fc6406bd4a41c3ff141cc45e93-X";
+    // "FLWPUBK_TEST-02b9b5fc6406bd4a41c3ff141cc45e93-X";
     return "FLWPUBK-aa4cd0b443404147d2d8229a37694b00-X";
   }
 
